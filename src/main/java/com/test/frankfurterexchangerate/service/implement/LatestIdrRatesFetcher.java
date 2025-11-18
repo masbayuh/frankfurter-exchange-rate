@@ -3,6 +3,7 @@ package com.test.frankfurterexchangerate.service.implement;
 import com.test.frankfurterexchangerate.dto.FrankfurterLatestDto;
 import com.test.frankfurterexchangerate.service.IDRDataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -13,20 +14,25 @@ import java.util.*;
 //ToDo
 @Component("latest_idr_rates")
 public class LatestIdrRatesFetcher implements IDRDataFetcher {
-    private final String baseUrl = "https://api.frankfurter.app";
-    private final String githubUsername = "masbayuh";
+    private final String baseUrl;
+    private final String githubUsername;
 
     private final WebClient client;
     private final RestTemplate restTemplate;
 
-    public LatestIdrRatesFetcher(WebClient client, RestTemplate restTemplate) {
+    public LatestIdrRatesFetcher(
+            @Value("${frankfurter.base-url}") String baseUrl,
+            @Value("${github.username}") String githubUsername,
+            WebClient client, RestTemplate restTemplate) {
         this.client = client;
         this.restTemplate = restTemplate;
+        this.baseUrl = baseUrl;
+        this.githubUsername = githubUsername;
     }
 
     @Override
     public List<Object> fetchData() throws Exception {
-        String url = baseUrl + "latest?base=IDR";
+        String url = baseUrl + "/latest?base=IDR";
         ResponseEntity<FrankfurterLatestDto> resp = restTemplate.getForEntity(url, FrankfurterLatestDto.class);
         FrankfurterLatestDto dto = resp.getBody();
 
@@ -57,7 +63,7 @@ public class LatestIdrRatesFetcher implements IDRDataFetcher {
         return result;
     }
 
-    private double computeSpreadFactor(String username) {
+    public double computeSpreadFactor(String username) {
         String lower = username == null ? "" : username.toLowerCase(Locale.ROOT);
         int sum = 0;
         for (char c : lower.toCharArray()) sum += (int) c;
