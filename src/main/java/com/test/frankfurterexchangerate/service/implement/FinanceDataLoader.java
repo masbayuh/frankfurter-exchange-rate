@@ -27,7 +27,7 @@ public class FinanceDataLoader implements ApplicationRunner {
             var fetcher = entry.getValue();
 
             var data = fetcher.fetchData();
-            store.save(key, Collections.singletonList(data));
+            store.save(key, data);
         }
     }
 }

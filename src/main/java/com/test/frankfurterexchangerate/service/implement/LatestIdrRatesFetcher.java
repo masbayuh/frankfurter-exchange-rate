@@ -26,7 +26,7 @@ public class LatestIdrRatesFetcher implements IDRDataFetcher {
 
     @Override
     public List<Object> fetchData() throws Exception {
-        String url = baseUrl + "latest?base=IDR";
+        String url = baseUrl + "/latest?base=IDR";
         ResponseEntity<FrankfurterLatestDto> resp = restTemplate.getForEntity(url, FrankfurterLatestDto.class);
         FrankfurterLatestDto dto = resp.getBody();
 
