@@ -34,8 +34,6 @@ class SupportedCurrenciesFetcherTest {
 
     @Test
     void testFetchData_ReturnsSortedCurrencies() throws Exception {
-
-        // --- Mock response body ---
         Map<String, Object> currenciesMock = new HashMap<>();
         currenciesMock.put("USD", "United States Dollar");
         currenciesMock.put("IDR", "Indonesian Rupiah");
@@ -49,14 +47,11 @@ class SupportedCurrenciesFetcherTest {
         when(restTemplate.getForEntity(expectedUrl, Map.class))
                 .thenReturn(mockResponse);
 
-        // ---- Execute ----
         List<Object> result = fetcher.fetchData();
 
-        // ---- Assertions ----
         assertNotNull(result);
         assertEquals(3, result.size());
 
-        // list sudah tersortir berdasar currency ascending
         Map<String, Object> first = (Map<String, Object>) result.get(0);
         Map<String, Object> second = (Map<String, Object>) result.get(1);
         Map<String, Object> third = (Map<String, Object>) result.get(2);
@@ -69,7 +64,6 @@ class SupportedCurrenciesFetcherTest {
         assertEquals("Indonesian Rupiah", second.get("name"));
         assertEquals("United States Dollar", third.get("name"));
 
-        // RestTemplate harus dipanggil sekali
         verify(restTemplate, times(1)).getForEntity(expectedUrl, Map.class);
     }
 }

@@ -37,7 +37,6 @@ class HistoricalIdrUsdFetcherTest {
     @Test
     void testFetchData_ReturnsSortedHistoricalRates() throws Exception {
 
-        // --- Mock JSON Response ----
         Map<String, Map<String, Double>> ratesMock = new HashMap<>();
         Map<String, Double> r1 = new HashMap<>();
         r1.put("USD", 0.000064);
@@ -59,18 +58,14 @@ class HistoricalIdrUsdFetcherTest {
 
         String expectedUrl = "https://api.frankfurter.app/2024-01-01..2024-01-05?from=IDR&to=USD";
 
-        // ---- Mock restTemplate call ----
         when(restTemplate.getForEntity(expectedUrl, Map.class))
                 .thenReturn(mockResponse);
 
-        // ---- Execute ----
         List<Object> result = fetcher.fetchData();
 
-        // ---- Assertions ----
         assertNotNull(result);
         assertEquals(3, result.size());
 
-        // Check sorting order
         Map<String, Object> first = (Map<String, Object>) result.get(0);
         Map<String, Object> second = (Map<String, Object>) result.get(1);
         Map<String, Object> third = (Map<String, Object>) result.get(2);
@@ -79,12 +74,10 @@ class HistoricalIdrUsdFetcherTest {
         assertEquals("2024-01-02", second.get("date"));
         assertEquals("2024-01-03", third.get("date"));
 
-        // Check values match
         assertEquals(0.000065, first.get("rate_IDR_to_USD"));
         assertEquals(0.000063, second.get("rate_IDR_to_USD"));
         assertEquals(0.000064, third.get("rate_IDR_to_USD"));
 
-        // Verify REST call
         verify(restTemplate, times(1))
                 .getForEntity(expectedUrl, Map.class);
     }

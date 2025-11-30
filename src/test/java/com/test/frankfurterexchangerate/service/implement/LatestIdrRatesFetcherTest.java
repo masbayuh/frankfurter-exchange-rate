@@ -42,7 +42,6 @@ class LatestIdrRatesFetcherTest {
 
     @Test
     void testFetchData_Success() throws Exception {
-        // GIVEN
         FrankfurterLatestDto dto = new FrankfurterLatestDto();
         dto.setBase("IDR");
         dto.setDate("2025-02-10");
@@ -59,14 +58,11 @@ class LatestIdrRatesFetcherTest {
                 Mockito.eq(FrankfurterLatestDto.class)
         )).thenReturn(response);
 
-        // Mock computeSpreadFactor
         Mockito.spy(fetcher);
         Mockito.doReturn(0.10).when(fetcher).computeSpreadFactor("sampleUser");
 
-        // WHEN
         List<Object> result = fetcher.fetchData();
 
-        // THEN
         Assertions.assertEquals(1, result.size());
 
         Map<String, Object> out = (Map<String, Object>) result.get(0);
@@ -75,7 +71,6 @@ class LatestIdrRatesFetcherTest {
         Assertions.assertEquals("2025-02-10", out.get("date"));
         Assertions.assertEquals(0.000064, out.get("rate"));
 
-        // Spread calculation:
         double expectedBuySpread =
                 (1.0 / 0.000064) * (1.0 + 0.10);
 
